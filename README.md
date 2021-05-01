@@ -1,4 +1,4 @@
-# LiFi-STM32
+# STM32 Based V2V Serial Communication with Li-Fi Technology
 This project aims serial communication between two vehicles by using visible light wavelengths. It is still under construction.
 
 I used two STM32F103C8T6 based development boards for communication. The transmitter side has 5 buttons, each button controls one different messege. The receiver side has a 16x8 LCD screen and a buzzer. When a message is received to the receiver side, the buzzer sounds and the message is printed on the LCD.
