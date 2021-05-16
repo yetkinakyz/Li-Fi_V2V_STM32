@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
+#include "i2c-lcd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,12 +47,11 @@ I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-char* msg1 = "\nDurum: Verici Aktif\n";
+char* msg_begin = "\nSTATUS: TRANSMITTER ACTIVE\n";
+char* messages_char = "0_|@#*~";
+char* messages[10] = {"      NO MESSAGE", "           SLOW!", "           STOP!", "          GO ON!", "       GIVE WAY!", "ATTN: AMBULANCE!", " ATTN: FOGGY WX!", " ATTN: ICE ROAD!"};
 
-char* messages = "0_|@#*~";
-
-char* test_message = "Li-Fi, henüz geliştirilme aşamasında olan kablosuz bağlantı teknolojisi.\nProf. Harald Haas tarafından icat edilmiştir.\nGörünür ışık iletişimi kullanan Li-Fi ile, Wi-Fi teknolojisinden yaklaşık olarak 100 kat daha hızlı veri aktarımı sağlanabileceği laboratuvar ortamında yapılan testler ile gösterilmiştir.\nWi-Fi bağlantısı duvarın ötesine sinyal gönderebilirken, Li-Fi bağlantısında ışık engellendiği zaman iletişim kesilmektedir.\n";
-
+int msg = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -60,7 +60,8 @@ static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
-
+void LCD_PrintMessage(char* str);
+int Send_Message(char* message, char message_char);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -102,14 +103,47 @@ int main(void)
 
   HAL_Delay(2000);
 
-  for (int i = 0; i < strlen(msg1); i++) {
+  lcd_init();
 
-  	  HAL_UART_Transmit(&huart1, (uint8_t *)&msg1[i], 1, 1000);
+  lcd_put_cur(0,0);
+  lcd_send_string("V2V SERIAL      ");
+  lcd_put_cur(1,0);
+  lcd_send_string("   COMMUNICATION");
+
+  HAL_Delay(1500);
+
+  lcd_put_cur(0,0);
+  lcd_send_string("WITH            ");
+  lcd_put_cur(1,0);
+  lcd_send_string("  LIGHT FIDELITY");
+
+  HAL_Delay(1500);
+
+  lcd_put_cur(0,0);
+  lcd_send_string("BY YETKIN AKYUZ");
+  lcd_put_cur(1,0);
+  lcd_send_string(" yetkinakyuz.com");
+
+  HAL_Delay(2000);
+
+  lcd_clear();
+
+  lcd_put_cur(0,0);
+  lcd_send_string("TX STATUS:      ");
+  HAL_Delay(500);
+  lcd_put_cur(1,0);
+  lcd_send_string("       ACTIVATED");
+
+  for (int i = 0; i < strlen(msg_begin); i++)
+  {
+  	  HAL_UART_Transmit(&huart1, (uint8_t *)&msg_begin[i], 1, HAL_MAX_DELAY);
 
   	  HAL_Delay(0.1);
     }
 
-  HAL_Delay(1000);
+  HAL_Delay(3000);
+
+  lcd_clear();
 
   /* USER CODE END 2 */
 
@@ -123,7 +157,18 @@ int main(void)
 		  while(!HAL_GPIO_ReadPin(GPIOA, BUTTON_1_Pin));
 		  HAL_Delay(50);
 
-		  HAL_UART_Transmit(&huart1, (uint8_t *)&messages[1], 1, 1000);
+		  if(msg == 1)
+		  {
+			  msg = Send_Message(messages[msg], messages_char[msg]);
+		  }
+
+		  else
+		  {
+			  msg = 1;
+
+			  LCD_PrintMessage(messages[msg]);
+		  }
+
 	  }
 
 	  else if(!HAL_GPIO_ReadPin(GPIOA, BUTTON_2_Pin))
@@ -132,7 +177,18 @@ int main(void)
 		  while(!HAL_GPIO_ReadPin(GPIOA, BUTTON_2_Pin));
 		  HAL_Delay(50);
 
-		  HAL_UART_Transmit(&huart1, (uint8_t *)&messages[2], 1, 1000);
+		  if(msg == 2)
+		  {
+			  msg = Send_Message(messages[msg], messages_char[msg]);
+		  }
+
+		  else
+		  {
+			  msg = 2;
+
+			  LCD_PrintMessage(messages[msg]);
+		  }
+
 	  }
 
 	  else if(!HAL_GPIO_ReadPin(GPIOA, BUTTON_3_Pin))
@@ -141,7 +197,18 @@ int main(void)
 		  while(!HAL_GPIO_ReadPin(GPIOA, BUTTON_3_Pin));
 		  HAL_Delay(50);
 
-		  HAL_UART_Transmit(&huart1, (uint8_t *)&messages[3], 1, 1000);
+		  if(msg == 3)
+		  {
+			  msg = Send_Message(messages[msg], messages_char[msg]);
+		  }
+
+		  else
+		  {
+			  msg = 3;
+
+			  LCD_PrintMessage(messages[msg]);
+		  }
+
 	  }
 
 	  else if(!HAL_GPIO_ReadPin(GPIOA, BUTTON_4_Pin))
@@ -150,7 +217,18 @@ int main(void)
 		  while(!HAL_GPIO_ReadPin(GPIOA, BUTTON_4_Pin));
 		  HAL_Delay(50);
 
-		  HAL_UART_Transmit(&huart1, (uint8_t *)&messages[4], 1, 1000);
+		  if(msg == 4)
+		  {
+			  msg = Send_Message(messages[msg], messages_char[msg]);
+		  }
+
+		  else
+		  {
+			  msg = 4;
+
+			  LCD_PrintMessage(messages[msg]);
+		  }
+
 	  }
 
 	  else if(!HAL_GPIO_ReadPin(GPIOA, BUTTON_5_Pin))
@@ -159,9 +237,18 @@ int main(void)
 		  while(!HAL_GPIO_ReadPin(GPIOA, BUTTON_5_Pin));
 		  HAL_Delay(50);
 
-		  HAL_UART_Transmit(&huart1, (uint8_t *)&messages[5], 1, 1000);
-	  }
+		  if(msg == 5)
+		  {
+			  msg = Send_Message(messages[msg], messages_char[msg]);
+		  }
 
+		  else
+		  {
+			  msg = 5;
+
+			  LCD_PrintMessage(messages[msg]);
+		  }
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -226,7 +313,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.ClockSpeed = 400000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -292,9 +379,9 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pins : BUTTON_1_Pin BUTTON_2_Pin BUTTON_3_Pin BUTTON_4_Pin
-                           BUTTON_5_Pin BUTTON_TEST_Pin */
+                           BUTTON_5_Pin */
   GPIO_InitStruct.Pin = BUTTON_1_Pin|BUTTON_2_Pin|BUTTON_3_Pin|BUTTON_4_Pin
-                          |BUTTON_5_Pin|BUTTON_TEST_Pin;
+                          |BUTTON_5_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -302,6 +389,28 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void LCD_PrintMessage(char* str)
+{
+	lcd_put_cur(0,0);
+	lcd_send_string("MESSAGE:        ");
+
+	lcd_put_cur(1,0);
+	lcd_send_string (str);
+}
+
+int Send_Message(char* message, char message_char)
+{
+	HAL_UART_Transmit(&huart1, (uint8_t *)&message_char, 1, 1000);
+
+	lcd_put_cur(0,0);
+	lcd_send_string("MESSAGE SENT:   ");
+
+	lcd_put_cur(1,0);
+	lcd_send_string (message);
+
+	return 0;
+}
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	__NOP();
 }

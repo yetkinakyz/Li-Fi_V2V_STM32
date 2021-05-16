@@ -48,18 +48,14 @@ I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-
-int x = -2;
-
-int timeout = 1000;
-
 uint8_t buffer[10];
 
 uint16_t value;
 uint16_t pre_value = 0;
 
-char* messages[9] = {"      MESAJ  YOK", "         YAVASLA", "             DUR", "   SERIDINDE KAL", "        DEVAM ET", "         YOL VER", "    AMBULANS VAR", "       YOL SISLI", "       YOL BUZLU"};
+char* messages[10] = {"      NO MESSAGE", "           SLOW!", "           STOP!", "          GO ON!", "       GIVE WAY!", "ATTN: AMBULANCE!", " ATTN: FOGGY WX!", " ATTN: ICE ROAD!"};
 
+int x = -2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -117,26 +113,39 @@ int main(void)
   lcd_init();
 
   lcd_put_cur(0,0);
-  lcd_send_string("LI-FI HABERLESME");
-
-  HAL_Delay(1000);
-
+  lcd_send_string("V2V SERIAL      ");
   lcd_put_cur(1,0);
-  lcd_send_string("  YETKIN AKYUZ  ");
+  lcd_send_string("   COMMUNICATION");
 
-  HAL_Delay(2000);
+  HAL_Delay(1500);
 
   lcd_put_cur(0,0);
-  lcd_send_string("DURUM:          ");
-
-  HAL_Delay(50);
-
+  lcd_send_string("WITH            ");
   lcd_put_cur(1,0);
-  lcd_send_string("     ALICI AKTIF");
+  lcd_send_string("  LIGHT FIDELITY");
 
-  HAL_UART_Transmit(&huart1, (uint8_t *)"\nDURUM: ALICI AKTIF\n", strlen("\nDurum: ALICI AKTIF\n"), HAL_MAX_DELAY);
+  HAL_Delay(1500);
+
+  lcd_put_cur(0,0);
+  lcd_send_string("BY YETKIN AKYUZ ");
+  lcd_put_cur(1,0);
+  lcd_send_string(" yetkinakyuz.com");
 
   HAL_Delay(2000);
+
+  lcd_clear();
+
+  lcd_put_cur(0,0);
+  lcd_send_string("RX STATUS:      ");
+  HAL_Delay(500);
+  lcd_put_cur(1,0);
+  lcd_send_string("       ACTIVATED");
+
+  HAL_UART_Transmit(&huart1, (uint8_t *)"\nSTATUS: RECEIVER IS ACTIVE\n", strlen("\nSTATUS: RECEIVER IS ACTIVE\n"), HAL_MAX_DELAY);
+
+  HAL_Delay(3000);
+
+  lcd_clear();
 
   /* USER CODE END 2 */
 
@@ -144,7 +153,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
 	HAL_ADC_Start(&hadc1);
 	HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
 
@@ -168,7 +176,7 @@ int main(void)
 	{
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, 1);
 
-		HAL_UART_Transmit(&huart1, (uint8_t *)"\nDURUM: MESAJ ALINDI: ", strlen("\nDURUM: MESAJ ALINDI: "), HAL_MAX_DELAY);
+		HAL_UART_Transmit(&huart1, (uint8_t *)"\nSTATUS: MESSAGE RECEIVED: ", strlen("\nSTATUS: MESSAGE RECEIVED: "), HAL_MAX_DELAY);
 		HAL_UART_Transmit(&huart1, (uint8_t *)messages[x], strlen(messages[x]), HAL_MAX_DELAY);
 
 		LCD_PrintMessage(messages[x]);
@@ -177,7 +185,6 @@ int main(void)
 
 		x = -2;
 	}
-
   }
     /* USER CODE END WHILE */
 
@@ -295,7 +302,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.ClockSpeed = 400000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -376,14 +383,10 @@ static void MX_GPIO_Init(void)
 void LCD_PrintMessage(char* str)
 {
 	lcd_put_cur(0,0);
-	lcd_send_string("MESAJ:");
-
-	//HAL_Delay(1);
+	lcd_send_string("MESSAGE:        ");
 
 	lcd_put_cur(1,0);
 	lcd_send_string (str);
-
-	//HAL_Delay(1);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -422,7 +425,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			x = 5;
 
 			break;
-
     }
 }
 

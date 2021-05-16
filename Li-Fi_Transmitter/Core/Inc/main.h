@@ -68,8 +68,6 @@ void Error_Handler(void);
 #define BUTTON_4_GPIO_Port GPIOA
 #define BUTTON_5_Pin GPIO_PIN_4
 #define BUTTON_5_GPIO_Port GPIOA
-#define BUTTON_TEST_Pin GPIO_PIN_5
-#define BUTTON_TEST_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

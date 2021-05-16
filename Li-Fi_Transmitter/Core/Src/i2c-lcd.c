@@ -4,7 +4,7 @@
 extern I2C_HandleTypeDef hi2c1;
 
 //Depends on your setup
-#define SLAVE_ADDRESS_LCD 0x7E
+#define SLAVE_ADDRESS_LCD 0x4E
 
 void lcd_send_cmd(char cmd)
 {
