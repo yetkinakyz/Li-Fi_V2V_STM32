@@ -3,14 +3,14 @@ This project aims serial communication between two vehicles by using visible lig
 
 I used two STM32F103C8T6 based development boards for communication.
 
-The transmitter side has 5 buttons and a 16x2 LCD screen. Each button controls one different messege. LCD show the selected message before it is sent.
+The transmitter side has 5 buttons and a 16x2 LCD screen. Each button controls one different messege. The LCD shows the selected message before it is sent.
 In order to see and select a message, push a button once. Then push the same button again in order to send the message. If you push a different button, you see and select a different message. 
 
 The receiver side has a 16x2 LCD screen and a buzzer. When a message is received to the receiver side, the buzzer sounds and the message is printed on the LCD.
 The buzzer sounds until the message is received and showed on the LCD.
 
 The transmitter transmits a single character corresponding to a message on the receiver side. For example, the transmitter sends "_".
-When the character is transmitted to the recipient, the recipient prints the message corresponding to that character. For example, the receiver prints "SLOW!".
+When the character is transmitted to the receiver, the receiver prints the message corresponding to that character. For example, the receiver prints "SLOW!".
 
 The LCDs are connected to boards over I2C. You should check the slave address in I2C LCD library because this address depends on your LCD I2C driver.
 You should add a zero bit to your slave address when you change it. For example, if your slave address is 0x27, you should write it as 0x4E.
