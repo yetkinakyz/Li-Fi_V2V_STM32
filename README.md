@@ -1,4 +1,4 @@
-# STM32 Based V2V Serial Communication with Li-Fi Technology
+# STM32 Based V2V Wireless Serial Communication with Li-Fi Technology
 This project aims serial communication between two vehicles by using visible light spectrum. It is still in progress.
 
 I used two STM32F103C8T6 based development boards for communication.
