@@ -50,9 +50,6 @@ UART_HandleTypeDef huart1;
 /* USER CODE BEGIN PV */
 uint8_t buffer[10];
 
-uint16_t value;
-uint16_t pre_value = 0;
-
 char* messages[10] = {"      NO MESSAGE", "           SLOW!", "           STOP!", "          GO ON!", "       GIVE WAY!", "ATTN: AMBULANCE!", " ATTN: FOGGY WX!", " ATTN: ICE ROAD!"};
 
 int x = -2;
@@ -153,23 +150,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	HAL_ADC_Start(&hadc1);
-	HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-
-	value = HAL_ADC_GetValue(&hadc1);
-
-	if (value > pre_value)
-	{
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, 0);
-	}
-
-	else
-	{
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, 1);
-	}
-
-	pre_value = value;
-
 	HAL_UART_Receive_IT(&huart1, (uint8_t *)&buffer, 1);
 
 	if(x != -2 && x != -1)
