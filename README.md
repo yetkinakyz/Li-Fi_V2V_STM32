@@ -15,7 +15,7 @@ When the character is transmitted to the receiver, the receiver prints the messa
 The LCDs communicate with the boards over I2C. You should check the slave addresses in I2C LCD libraries because these addresses depend on your LCD I2C drivers.
 You should shift to left for one bit to your slave address when you change it. For example, if your slave address is 0x27, you should write it as 0x4E.
 
-I used a 5W power led as the transmitter's light source, and I used BPW34, a photodiode, in order to capture signals. In order to communciate over visible light, I used OOK (On-Off Keying) modulation. For serial communication, I used UART protocol.
+I used a 5W power led as the transmitter's light source, and I used BPW21, a photodiode, in order to capture signals. In order to communciate over visible light, I used OOK (On-Off Keying) modulation. For serial communication, I used UART protocol.
 
 In this project, communication is provided at 115200 baud rate in line with the owned resources. It does not work adaptively yet. In other words, communication can be achieved at a certain light intensity or distance. An AGC can solve this problem.
 
