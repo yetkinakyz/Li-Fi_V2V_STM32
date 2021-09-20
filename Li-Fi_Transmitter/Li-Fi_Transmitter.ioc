@@ -144,4 +144,3 @@ ProjectManager.LibraryCopy=1
 PA3.GPIO_Label=BUTTON_4
 PA3.Signal=GPIO_Input
 PA2.Locked=true
-isbadioc=false

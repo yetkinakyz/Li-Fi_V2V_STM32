@@ -133,4 +133,3 @@ ProjectManager.CustomerFirmwarePackage=
 ProjectManager.DeviceId=STM32F103C8Tx
 ProjectManager.LibraryCopy=1
 PA2.Locked=true
-isbadioc=false
